@@ -115,7 +115,7 @@ const getDataByParams = async(req, res) => {
         if (!mongoose.isValidObjectId(id)) return res.status(400), send({ status: false, message: "Invalid Book Id" })
 
         let findBookData = await bookModel.findOne({ _id: id, isDeleted: false }).select({ __v: 0 })
-        if (!validate.isValidField(findBookData)) return res.status(404).send("Dataa Not Found")
+        if (!validate.isValidField(findBookData)) return res.status(404).send("Data Not Found")
 
         let findReviewData = await reviewModel.find({ bookId: id, isDeleted: false }).select({ isDeleted: 0 }).collation({ locale: 'en', strength: 2 })
 
@@ -143,6 +143,8 @@ const deleteBook = async function(req, res) {
             return res.status(400).send({ status: false, msg: "Book Id is invalid" })
         }
         let isDeletedStatus = await bookModel.findOne({ _id: bookIdToBeDeleted, isDeleted: false });
+
+        if(!isDeletedStatus) return res.status(404).send({status : false, message :"Already deleted"})
 
         //Authorization
         if (req.authorIdToken != isDeletedStatus.userId) {
@@ -184,14 +186,16 @@ const updateBooksById = async function(req, res) {
 
         let bookIdCheck = await bookModel.findOne({ _id: bookId, isDeleted: false });
 
+        if (!bookIdCheck) {
+            return res.status(400).send({ status: false, msg: "Book not found" })
+        }
+
         //Authorization
         if (!(req.authorIdToken = bookIdCheck.userId)) {
             return res.status(401).send({ message: "User is not authorized" });
         }
 
-        if (!bookIdCheck) {
-            return res.status(400).send({ status: false, msg: "Book not found" })
-        }
+        
 
         let isbnCheck = await bookModel.findOne({ ISBN: data.ISBN })
         if (isbnCheck) {

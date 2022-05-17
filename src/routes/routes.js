@@ -9,7 +9,7 @@ const router = express.Router();
 
 
 //  UserApi
-router.post('/createUser', userController.createUser);
+router.post('/register', userController.createUser);
 
 router.post('/login', userController.login)
 
@@ -18,7 +18,7 @@ router.post('/login', userController.login)
 //=============================================BOOK API=====================================
 
 // BookAPI
-router.post('/createBook', middleware.authorization, bookController.createBook);
+router.post('/books', middleware.authorization, bookController.createBook);
 
 //GET API BY QUERY
 
