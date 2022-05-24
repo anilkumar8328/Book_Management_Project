@@ -18,7 +18,7 @@ router.post('/login', userController.login)
 //=============================================BOOK API=====================================
 
 // BookAPI
-router.post('/books', middleware.authorization, bookController.createBook);
+router.post('/books',  bookController.createBook);
 
 //GET API BY QUERY
 
